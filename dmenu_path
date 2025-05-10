@@ -6,11 +6,14 @@ use autodie;
 
 open my $cmd, '-|', 'stest', '-flx', split /:/, $ENV{DMENU_PATH} || $ENV{PATH};
 my @programs = readline $cmd;
-my %favmap = map { $_ => 1 } split /[ ,;:]/, $ENV{DMENU_FAVS} // '';
+my %favmap = map { state $lastfav = 0; $_ => ++$lastfav } split /[ ,;:]/, $ENV{DMENU_FAVS} // '';
 
 chomp @programs;
 print map { "$_\n" } sort {
-	if (exists $favmap{$a} == exists $favmap{$b}) {
+	if (exists $favmap{$a} && exists $favmap{$b}) {
+		return $favmap{$a} <=> $favmap{$b};
+	}
+	elsif (!exists $favmap{$a} && !exists $favmap{$b}) {
 		return $a cmp $b;
 	}
 	else {
