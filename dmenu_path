@@ -1,13 +1,20 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-cachedir="${XDG_CACHE_HOME:-"$HOME/.cache"}"
-cache="$cachedir/dmenu_run"
+use v5.24;
+use warnings;
+use autodie;
 
-[ ! -e "$cachedir" ] && mkdir -p "$cachedir"
+open my $cmd, '-|', 'stest', '-flx', split /:/, $ENV{DMENU_PATH} || $ENV{PATH};
+my @programs = readline $cmd;
+my %favmap = map { $_ => 1 } split /[ ,;:]/, $ENV{DMENU_FAVS} // '';
 
-IFS=:
-if stest -dqr -n "$cache" $PATH; then
-	stest -flx $PATH | sort -u | tee "$cache"
-else
-	cat "$cache"
-fi
+chomp @programs;
+print map { "$_\n" } sort {
+	if (exists $favmap{$a} == exists $favmap{$b}) {
+		return $a cmp $b;
+	}
+	else {
+		return exists $favmap{$b} <=> exists $favmap{$a};
+	}
+} @programs;
+
