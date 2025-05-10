@@ -8,9 +8,10 @@ static int min_width = 800;                    /* minimum width when centered */
 static const float menu_height_ratio = 2.0f;  /* This is the ratio used in the original calculation */
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
-	"monospace:size=10"
+	"DejaVu Sans:size=13",
+	"Icons:size=16"
 };
-static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
+static const char *prompt      = "";      /* -p  option; prompt to the left of input field */
 static const char *colors[SchemeLast][2] = {
 	/*     fg         bg       */
 	[SchemeNorm] = { "#ebdbb2", "#282828" },
@@ -24,8 +25,8 @@ static const unsigned int alphas[SchemeLast][2] = {
 	[SchemeOut] = { OPAQUE, alpha },
 };
 /* -l and -g options; controls number of lines and columns in grid if > 0 */
-static unsigned int lines      = 5;
-static unsigned int columns    = 4;
+static unsigned int lines      = 4;
+static unsigned int columns    = 3;
 
 /*
  * Characters not considered part of a word while deleting words
